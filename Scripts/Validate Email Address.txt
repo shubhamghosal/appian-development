@@ -1,0 +1,5 @@
+regexmatch(
+  pattern: "^[A-Z0-9\'\+\&\%_-]+(\.{0,1}[A-Z0-9\'\+\&\%_-]+)*[@]{1}[A-Z0-9.-]*[A-Z0-9-]+[.]{1}[A-Z]{2,6}$",
+  searchString: ri!email,
+  regexFlags: "si"
+)

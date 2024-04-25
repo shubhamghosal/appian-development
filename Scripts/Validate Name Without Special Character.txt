@@ -1,0 +1,8 @@
+if(
+  a!isNullOrEmpty(ri!name),
+  false,
+  regexmatch(
+    "^\p{L}+['\p{L}\p{Zs}]{0,}\p{L}$",
+    ri!name
+  )
+)
