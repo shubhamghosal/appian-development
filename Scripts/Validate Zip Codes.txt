@@ -1,0 +1,12 @@
+if(
+  a!isNullOrEmpty(ri!zipCode),
+  {},
+  or(
+    like(
+      ri!zipCode,
+      "[0-9][0-9][0-9][0-9][0-9]"
+    )
+  ),
+  null,
+  "Enter a valid ZIP code with 5 digits"
+)
