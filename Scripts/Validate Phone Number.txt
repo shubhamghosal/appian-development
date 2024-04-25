@@ -1,0 +1,7 @@
+and(
+    len(ri!phoneNumber) = len(cleanwith(ri!phoneNumber, "+0123456789()()")),
+    and(
+      len(ri!phoneNumber)>=3,
+      len(ri!phoneNumber)<=15
+    )
+)
