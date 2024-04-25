@@ -1,0 +1,134 @@
+a!localVariables(
+    local!listPagingInfo: a!pagingInfo(startIndex: 1, batchSize: 5),
+    /* Instead of todatasubset just use your own query */
+    local!pagedList: todatasubset( /*Data*/, local!listPagingInfo),
+    {
+      {
+        a!gridLayout(
+          label: "Data",
+          rows: a!forEach(
+            local!pagedList,
+            a!gridRowLayout(
+              /*contents*/
+            )
+          )
+        )
+        a!richTextDisplayField(
+          value: {
+            a!richTextIcon(
+              icon: "angle-double-left",
+              link: a!dynamicLink(
+                saveInto: {
+                  a!save(local!listPagingInfo.startIndex, 1),
+                  a!save(
+                    local!pagedList,
+                    todatasubset(arrayToPage: /*Data*/, pagingConfiguration: local!listPagingInfo)
+                  )
+                },
+                showWhen: local!listPagingInfo.startIndex <> 1
+              ),
+              linkStyle: "STANDALONE",
+              color: if(
+                local!listPagingInfo.startIndex <> 1,
+                "STANDARD",
+                "SECONDARY"
+              ),
+              size: "MEDIUM"
+            ),
+            a!richTextIcon(
+              icon: "angle-left",
+              link: a!dynamicLink(
+                saveInto: {
+                  a!save(
+                    local!listPagingInfo.startIndex,
+                    if(
+                      local!listPagingInfo.startIndex - local!listPagingInfo.batchSize < 1,
+                      1,
+                      local!listPagingInfo.startIndex - local!listPagingInfo.batchSize
+                    )
+                  )
+                },
+                showWhen: local!listPagingInfo.startIndex <> 1
+              ),
+              linkStyle: "STANDALONE",
+              color: if(
+                local!listPagingInfo.startIndex <> 1,
+                "STANDARD",
+                "SECONDARY"
+              ),
+              size: "MEDIUM"
+            ),
+            " ",
+            a!richTextItem(
+              text: {
+                local!listPagingInfo.startIndex,
+                " - ",
+                if(
+                  local!listPagingInfo.startIndex + local!listPagingInfo.batchSize - 1 > local!pagedList.totalCount,
+                  local!pagedList.totalCount,
+                  local!listPagingInfo.startIndex + local!listPagingInfo.batchSize - 1
+                )
+              },
+              size: "MEDIUM",
+              style: "STRONG"
+            ),
+            a!richTextItem(
+              text: {
+                " of ",
+                fixed(local!pagedList.totalCount, 0)
+              },
+              size: "MEDIUM"
+            ),
+            " ",
+            a!richTextIcon(
+              icon: "angle-right",
+              link: a!dynamicLink(
+                saveInto: {
+                  a!save(
+                    local!listPagingInfo,
+                    a!pagingInfo(
+                      startIndex: local!listPagingInfo.startIndex + local!listPagingInfo.batchSize,
+                      batchSize: local!listPagingInfo.batchSize
+                    )
+                  )
+                },
+                showWhen: local!listPagingInfo.startIndex + local!listPagingInfo.batchSize - 1 < local!pagedList.totalCount
+              ),
+              linkStyle: "STANDALONE",
+              color: if(
+                local!listPagingInfo.startIndex + local!listPagingInfo.batchSize - 1 < local!pagedList.totalCount,
+                "STANDARD",
+                "SECONDARY"
+              ),
+              size: "MEDIUM"
+            ),
+            a!richTextIcon(
+              icon: "angle-double-right",
+              link: a!dynamicLink(
+                saveInto: {
+                  a!save(
+                    local!listPagingInfo.startIndex,
+                    /* When jumping to the last page, make sure that the startIndex is an even multiple of batch size. *
+                     * This ensures that you have the same last page as if you had gotten there one page at a time.    */
+                    if(
+                      mod(local!pagedList.totalCount, local!listPagingInfo.batchSize) = 0,
+                      local!pagedList.totalCount - local!listPagingInfo.batchSize + 1,
+                      local!pagedList.totalCount - mod(local!pagedList.totalCount, local!listPagingInfo.batchSize) + 1
+                    )
+                  )
+                },
+                showWhen: local!listPagingInfo.startIndex + local!listPagingInfo.batchSize - 1 < local!pagedList.totalCount
+              ),
+              linkStyle: "STANDALONE",
+              color: if(
+                local!listPagingInfo.startIndex + local!listPagingInfo.batchSize - 1 < local!pagedList.totalCount,
+                "STANDARD",
+                "SECONDARY"
+              ),
+              size: "MEDIUM"
+            )
+          }
+        )
+      }
+    }
+  )
